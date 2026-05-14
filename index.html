@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mynd — Stock Management Portal</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Space Grotesk',sans-serif;font-weight:300;background:#1E3030;color:#EFEFE8;padding:24px;font-size:14px;line-height:1.5}.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #375555}.header h1{font-size:20px;font-weight:400;color:#B5CFBC;letter-spacing:.5px}.header span{font-size:12px;color:#6a8a7a}.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}.mc{background:#253d3d;border:1px solid #375555;border-radius:8px;padding:12px 16px}.ml{font-size:11px;color:#6a8a7a;margin-bottom:4px;letter-spacing:.3px}.mv{font-size:22px;font-weight:400;color:#EFEFE8}.mv span{font-size:12px;color:#6a8a7a}.ms{font-size:11px;font-weight:400;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}.sok{background:#1a3a2a;color:#B5CFBC}.swn{background:#3d3520;color:#e3b341}.scr{background:#3d2020;color:#f07070}.st{font-size:15px;font-weight:400;color:#B5CFBC;margin:20px 0 10px;letter-spacing:.3px}.at{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px}.at th{text-align:left;padding:8px 10px;background:#253d3d;color:#6a8a7a;font-weight:400;border-bottom:1px solid #375555;letter-spacing:.3px}.at td{padding:6px 10px;border-bottom:1px solid #2a4545;color:#c5d5c8;font-weight:300}.pl{font-size:11px;font-weight:400;padding:2px 8px;border-radius:6px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}@media(max-width:768px){.two-col{grid-template-columns:1fr}}.cw{position:relative;width:100%;margin-bottom:20px}.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:#6a8a7a;margin-bottom:20px}.legend span{display:flex;align-items:center;gap:4px}.dot{width:10px;height:10px;border-radius:2px}.line-dot{width:16px;height:2px}.footer{margin-top:32px;padding-top:16px;border-top:1px solid #375555;font-size:11px;color:#375555;text-align:center;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>MYND — Stock Management Portal</h1>
+<span id="updated"></span>
+</div>
+<div class="mg">
+<div class="mc"><p class="ml">Finishing powder stock</p><p class="mv">27.7 <span>kg</span></p><span class="ms scr">1.1 weeks left</span></div>
+<div class="mc"><p class="ml">Yield rate</p><p class="mv">0.069 <span>kg/bag</span></p></div>
+<div class="mc"><p class="ml">Revenue (actual)</p><p class="mv">$97,279</p><span class="ms swn">-18% vs forecast</span></div>
+<div class="mc"><p class="ml">Revenue (forecast)</p><p class="mv">$118,603</p></div>
+</div>
+<div class="mg">
+<div class="mc"><p class="ml">Weekly bags needed (3mo)</p><p class="mv">503</p></div>
+<div class="mc"><p class="ml">Revenue per kg</p><p class="mv">$1,321</p></div>
+<div class="mc"><p class="ml">Website revenue (24mo)</p><p class="mv">$5.4M</p></div>
+<div class="mc"><p class="ml">Retail revenue (24mo)</p><p class="mv">$116K</p></div>
+</div>
+<p class="st">Stockout early warning</p>
+<table class="at">
+<thead><tr><th>Product</th><th>Stock</th><th>Weekly use</th><th>Weeks left</th><th>Status</th><th>Action</th><th>Urgency</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:400;color:#EFEFE8">Bulk powder</td><td>27.7 kg</td><td>24.2 kg</td><td>1.1</td><td><span class="pl sok">OK</span></td><td>On track</td><td><span class="pl swn">HIGH</span></td></tr>
+</tbody></table>
+<div class="two-col">
+<div>
+<p class="st" style="margin-top:0">Packaging reorder status</p>
+<table class="at">
+<thead><tr><th>Item</th><th>Stock</th><th>Weeks</th><th>Alert</th><th>Order Qty</th></tr></thead>
+<tbody>
+<tr><td>POW-14</td><td>500</td><td>63.7</td><td><span class="pl sok">OK</span></td><td>157</td></tr>
+<tr><td>POW-60</td><td>8,000</td><td>63.4</td><td><span class="pl sok">OK</span></td><td>2,522</td></tr>
+<tr><td>POW-120</td><td>0</td><td>0.0</td><td><span class="pl scr">Out of stock</span></td><td>361</td></tr>
+<tr><td>CAP-28</td><td>2,000</td><td>197.9</td><td><span class="pl sok">OK</span></td><td>202</td></tr>
+<tr><td>CAP-60</td><td>8,000</td><td>55.7</td><td><span class="pl sok">OK</span></td><td>2,872</td></tr>
+<tr><td>CAP-120</td><td>0</td><td>0.0</td><td><span class="pl scr">Out of stock</span></td><td>38</td></tr>
+<tr><td>CHOC-224</td><td>1,000</td><td>6.1</td><td><span class="pl swn">Order now</span></td><td>3,296</td></tr>
+<tr><td>BREW-250</td><td>2,000</td><td>31.2</td><td><span class="pl sok">OK</span></td><td>1,283</td></tr>
+<tr><td>SPOON-1/4</td><td>400</td><td>40.8</td><td><span class="pl sok">OK</span></td><td>196</td></tr>
+</tbody></table>
+</div>
+<div>
+<p class="st" style="margin-top:0">Finished stock reorder status</p>
+<table class="at">
+<thead><tr><th>Item</th><th>Stock</th><th>Weeks</th><th>Alert</th><th>Order Qty</th></tr></thead>
+<tbody>
+<tr><td>POW-14</td><td>150</td><td>19.1</td><td><span class="pl sok">OK</span></td><td>79</td></tr>
+<tr><td>POW-60</td><td>290</td><td>2.3</td><td><span class="pl swn">Order now</span></td><td>1,261</td></tr>
+<tr><td>POW-120</td><td>0</td><td>0.0</td><td><span class="pl scr">Out of stock</span></td><td>181</td></tr>
+<tr><td>CAP-28</td><td>200</td><td>19.8</td><td><span class="pl sok">OK</span></td><td>101</td></tr>
+<tr><td>CAP-60</td><td>320</td><td>2.2</td><td><span class="pl swn">Order now</span></td><td>1,436</td></tr>
+<tr><td>CAP-120</td><td>0</td><td>0.0</td><td><span class="pl scr">Out of stock</span></td><td>19</td></tr>
+<tr><td>CHOC-224</td><td>290</td><td>1.8</td><td><span class="pl swn">Order now</span></td><td>1,648</td></tr>
+<tr><td>BREW-250</td><td>2,000</td><td>31.2</td><td><span class="pl sok">OK</span></td><td>641</td></tr>
+<tr><td>SPOON-1/4</td><td>479</td><td>48.8</td><td><span class="pl sok">OK</span></td><td>196</td></tr>
+</tbody></table>
+</div>
+</div>
+<div class="two-col">
+<div>
+<p class="st" style="margin-top:0">Product split (latest month)</p>
+<table class="at">
+<thead><tr><th>Product</th><th>Units</th><th>% split</th></tr></thead>
+<tbody>
+<tr><td>POW-TP</td><td>3</td><td>0.1%</td></tr>
+<tr><td>POW-60</td><td>551</td><td>24.5%</td></tr>
+<tr><td>POW-120</td><td>6</td><td>0.3%</td></tr>
+<tr><td>CAP-28</td><td>118</td><td>5.3%</td></tr>
+<tr><td>CAP-60</td><td>696</td><td>31.0%</td></tr>
+<tr><td>CAP-120</td><td>6</td><td>0.3%</td></tr>
+<tr><td>CHOC-224</td><td>606</td><td>27.0%</td></tr>
+<tr><td>BREW-250</td><td>219</td><td>9.7%</td></tr>
+<tr><td>SPOON-1/4</td><td>42</td><td>1.9%</td></tr>
+<tr style="font-weight:400;color:#EFEFE8"><td>Total</td><td>2,247</td><td>100%</td></tr>
+</tbody></table>
+</div>
+<div>
+<p class="st" style="margin-top:0">Product split breakdown</p>
+<div class="cw" style="height:280px"><canvas id="pieChart"></canvas></div>
+</div>
+</div>
+<p class="st">Revenue forecast — website + retail (24 months)</p>
+<div class="cw" style="height:280px"><canvas id="revChart"></canvas></div>
+<div class="legend">
+<span><span class="dot" style="background:#375555"></span>Website forecast</span>
+<span><span class="dot" style="background:#B5CFBC"></span>Retail forecast</span>
+</div>
+<p class="st">Monthly powder demand — website + retail</p>
+<div class="cw" style="height:260px"><canvas id="powChart"></canvas></div>
+<div class="legend">
+<span><span class="line-dot" style="background:#B5CFBC"></span>Website powder (kg)</span>
+<span><span class="line-dot" style="background:#e3b341;border-top:1px dashed #e3b341"></span>Retail powder (kg)</span>
+</div>
+<div class="footer">MYND NEW ZEALAND LION'S MANE — myndmushrooms.co.nz</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<script>
+document.getElementById('updated').textContent='Updated: '+new Date().toLocaleDateString('en-NZ',{day:'numeric',month:'short',year:'numeric'});
+var mo=['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26','Jan 27','Feb 27','Mar 27','Apr 27','May 27','Jun 27','Jul 27','Aug 27','Sep 27','Oct 27','Nov 27','Dec 27'];
+var gridC='rgba(181,207,188,0.08)';var textC='rgba(181,207,188,0.5)';
+new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:['POW-TP','POW-60','POW-120','CAP-28','CAP-60','CAP-120','CHOC-224','BREW-250','SPOON-1/4'],datasets:[{data:[3,551,6,118,696,6,606,219,42],backgroundColor:['#1E3030','#2a4545','#375555','#4a6a6a','#5d8080','#709595','#B5CFBC','#d0e0d3','#EFEFE8'],borderColor:'#1E3030',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#253d3d',titleColor:'#EFEFE8',titleFont:{family:'Space Grotesk',weight:'400'},bodyColor:'#B5CFBC',bodyFont:{family:'Space Grotesk',weight:'300'},borderColor:'#375555',borderWidth:1,callbacks:{label:function(ctx){var t=ctx.dataset.data.reduce(function(a,b){return a+b},0);return ctx.label+': '+ctx.raw+' ('+Math.round(ctx.raw/t*100)+'%)'}}}}}});
+var webRev=[104671,95573,111111,116279,128049,141346,156436,173644,182326,191442,250000,215000,221618,232699,244334,256551,269378,282847,296990,311839,327431,343803,360993,379043];
+var retRev=[2539,983,10893,2324,3000,3150,3308,3473,3647,3829,4020,4221,4432,4654,4887,5131,5388,5657,5940,6237,6549,6876,7220,7581];
+new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:mo,datasets:[{label:'Website',data:webRev,backgroundColor:'#375555',borderRadius:2},{label:'Retail',data:retRev,backgroundColor:'#B5CFBC',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#253d3d',titleColor:'#EFEFE8',titleFont:{family:'Space Grotesk'},bodyColor:'#B5CFBC',bodyFont:{family:'Space Grotesk'},borderColor:'#375555',borderWidth:1}},scales:{x:{stacked:true,ticks:{color:textC,maxRotation:45,autoSkip:false,font:{size:10,family:'Space Grotesk'}},grid:{display:false}},y:{stacked:true,ticks:{color:textC,font:{family:'Space Grotesk'},callback:function(v){return '$'+Math.round(v/1000)+'k'}},grid:{color:gridC}}}}});
+var webPow=[84.0,77.9,81.6,73.7,102.1,112.8,124.8,138.5,145.5,152.8,199.5,171.5,176.7,185.6,194.9,204.7,214.9,225.5,236.9,248.8,261.2,274.3,287.9,302.3];
+var retPow=[3.4,1.7,19.6,3.1,4.9,5.2,5.4,5.7,6.0,6.3,6.7,7.0,7.3,7.7,8.1,8.5,8.9,9.3,9.8,10.3,10.8,11.4,11.9,12.5];
+new Chart(document.getElementById('powChart'),{type:'line',data:{labels:mo,datasets:[{label:'Website',data:webPow,borderColor:'#B5CFBC',backgroundColor:'rgba(181,207,188,0.1)',fill:true,tension:0.3,borderWidth:2,pointRadius:2,pointBackgroundColor:'#B5CFBC'},{label:'Retail',data:retPow,borderColor:'#e3b341',backgroundColor:'rgba(227,179,65,0.08)',fill:true,tension:0.3,borderWidth:2,pointRadius:2,pointBackgroundColor:'#e3b341',borderDash:[5,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#253d3d',titleColor:'#EFEFE8',titleFont:{family:'Space Grotesk'},bodyColor:'#B5CFBC',bodyFont:{family:'Space Grotesk'},borderColor:'#375555',borderWidth:1}},scales:{x:{ticks:{color:textC,maxRotation:45,autoSkip:false,font:{size:10,family:'Space Grotesk'}},grid:{display:false}},y:{ticks:{color:textC,font:{family:'Space Grotesk'},callback:function(v){return v+'kg'}},grid:{color:gridC}}}}});
+</script>
+</body>
+</html>
