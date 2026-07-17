@@ -8,367 +8,621 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg: #1E3030;
     --card: #375555;
     --heading: #B5CFBC;
     --body: #EFEFE8;
     --muted: #6a8a7a;
-    --green: #4caf87;
-    --amber: #e8a838;
-    --red: #e05454;
-    --border: rgba(181,207,188,0.12);
+    --green: #4CAF7D;
+    --amber: #E8A838;
+    --red: #E05252;
+    --green-bg: rgba(76,175,125,0.15);
+    --amber-bg: rgba(232,168,56,0.15);
+    --red-bg: rgba(224,82,82,0.15);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--body); min-height: 100vh; }
-  
-  header { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 16px; }
-  .logo { width: 40px; height: 40px; }
-  .header-text h1 { font-size: 1.4rem; font-weight: 700; color: var(--heading); letter-spacing: -0.02em; }
-  .header-text p { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
-  .header-right { margin-left: auto; font-size: 0.78rem; color: var(--muted); text-align: right; }
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--body);
+    min-height: 100vh;
+    padding: 0;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 1px solid rgba(181,207,188,0.15);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 40px; height: 40px; background: var(--bg); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700; color: var(--heading);
+  }
+  .logo-text { font-size: 18px; font-weight: 600; color: var(--heading); }
+  .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .header-meta { text-align: right; }
+  .header-date { font-size: 13px; color: var(--muted); }
+  .header-updated { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  main { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+  main { max-width: 1400px; margin: 0 auto; padding: 32px 24px 64px; }
 
-  h2 { font-size: 1rem; font-weight: 600; color: var(--heading); margin-bottom: 16px; letter-spacing: 0.04em; text-transform: uppercase; }
+  section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 1px solid rgba(181,207,188,0.1);
+  }
 
-  /* KPI Grid */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
-  .kpi-card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
-  .kpi-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-  .kpi-value { font-size: 1.9rem; font-weight: 700; color: var(--body); letter-spacing: -0.03em; line-height: 1; }
-  .kpi-sub { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
-  .kpi-alert { color: var(--amber); }
-  .kpi-ok { color: var(--green); }
-  .kpi-warn { color: var(--red); }
+  /* KPI CARDS */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px 18px;
+    border: 1px solid rgba(181,207,188,0.1);
+  }
+  .kpi-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 700; color: var(--heading); line-height: 1; }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .kpi-badge {
+    display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
+  .badge-ok { background: var(--green-bg); color: var(--green); }
+  .badge-low { background: var(--amber-bg); color: var(--amber); }
+  .badge-out { background: var(--red-bg); color: var(--red); }
 
-  /* Status pills */
-  .pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
-  .pill-ok { background: rgba(76,175,135,0.18); color: var(--green); }
-  .pill-soon { background: rgba(232,168,56,0.18); color: var(--amber); }
-  .pill-now { background: rgba(232,168,56,0.28); color: var(--amber); }
-  .pill-oos { background: rgba(224,84,84,0.2); color: var(--red); }
-  .pill-low { background: rgba(232,168,56,0.15); color: var(--amber); }
+  /* STOCKOUT TABLE */
+  .stockout-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .stockout-table th {
+    text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+    border-bottom: 1px solid rgba(181,207,188,0.1);
+  }
+  .stockout-table td { padding: 10px 12px; border-bottom: 1px solid rgba(181,207,188,0.06); }
+  .stockout-table tr:last-child td { border-bottom: none; }
+  .stockout-table tr:hover td { background: rgba(181,207,188,0.04); }
+  .status-pill {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .pill-ok { background: var(--green-bg); color: var(--green); }
+  .pill-low { background: var(--amber-bg); color: var(--amber); }
+  .pill-order-soon { background: var(--amber-bg); color: var(--amber); }
+  .pill-order-now { background: rgba(224,82,82,0.15); color: #FF8C42; }
+  .pill-out { background: var(--red-bg); color: var(--red); }
 
-  /* Section spacing */
-  .section { margin-bottom: 32px; }
+  /* ALERTS GRID */
+  .alerts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media(max-width: 768px) { .alerts-grid { grid-template-columns: 1fr; } }
+  .alerts-panel { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid rgba(181,207,188,0.1); }
+  .alerts-panel-header {
+    padding: 14px 18px; font-size: 12px; font-weight: 600; color: var(--heading);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-bottom: 1px solid rgba(181,207,188,0.1); background: rgba(30,48,48,0.3);
+  }
+  .alert-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 18px; border-bottom: 1px solid rgba(181,207,188,0.06);
+    gap: 8px;
+  }
+  .alert-row:last-child { border-bottom: none; }
+  .alert-name { font-size: 13px; color: var(--body); flex: 1; }
+  .alert-qty { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .alert-suggest { font-size: 11px; color: var(--heading); white-space: nowrap; }
 
-  /* Tables */
-  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-  th { text-align: left; font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid var(--border); }
-  td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--body); }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(255,255,255,0.03); }
-  .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+  /* CHARTS */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media(max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+  .chart-card { background: var(--card); border-radius: 12px; padding: 24px; border: 1px solid rgba(181,207,188,0.1); }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--heading); margin-bottom: 20px; }
+  .chart-wrap { position: relative; height: 300px; }
+  .chart-wrap-tall { position: relative; height: 340px; }
 
-  /* Two-column grid for alerts */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  /* PRODUCT SPLIT */
+  .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media(max-width: 768px) { .split-layout { grid-template-columns: 1fr; } }
+  .split-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+  .split-table th {
+    text-align: left; font-size: 11px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 10px;
+    border-bottom: 1px solid rgba(181,207,188,0.1);
+  }
+  .split-table td { padding: 8px 10px; border-bottom: 1px solid rgba(181,207,188,0.06); }
+  .split-table tr:last-child td { border-bottom: none; }
+  .pct-bar-wrap { width: 100%; background: rgba(181,207,188,0.1); border-radius: 4px; height: 6px; }
+  .pct-bar { height: 6px; border-radius: 4px; background: var(--heading); }
 
-  /* Chart containers */
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
-  .chart-card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
-  .chart-wrap { position: relative; height: 260px; margin-top: 12px; }
-
-  /* Product split */
-  .split-grid { display: grid; grid-template-columns: 1fr 280px; gap: 20px; margin-bottom: 32px; }
-  .split-donut { display: flex; align-items: center; justify-content: center; }
-
-  /* Footer */
-  footer { text-align: center; padding: 24px 32px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.78rem; }
-  footer a { color: var(--heading); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  @media (max-width: 900px) {
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .two-col, .chart-grid, .split-grid { grid-template-columns: 1fr; }
+  footer {
+    text-align: center; padding: 32px; color: var(--muted); font-size: 12px;
+    border-top: 1px solid rgba(181,207,188,0.08);
   }
 </style>
 </head>
 <body>
 
 <header>
-  <svg class="logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <rect width="64" height="64" rx="12" fill="#375555"/>
-    <circle cx="32" cy="28" r="14" fill="#B5CFBC"/>
-    <rect x="28" y="42" width="8" height="14" rx="4" fill="#B5CFBC"/>
-  </svg>
-  <div class="header-text">
-    <h1>Mynd Mushrooms</h1>
-    <p>Stock Management Portal</p>
+  <div class="logo">
+    <div class="logo-icon">M</div>
+    <div>
+      <div class="logo-text">Mynd Mushrooms</div>
+      <div class="logo-sub">Stock Management Portal</div>
+    </div>
   </div>
-  <div class="header-right">
-    Updated: 13 Jul 2026<br>
-    <span style="color:#4caf87">● Live</span>
+  <div class="header-meta">
+    <div class="header-date">Saturday 18 July 2026</div>
+    <div class="header-updated">Weekly auto-update</div>
   </div>
 </header>
 
 <main>
 
-  <!-- KPI Cards -->
-  <div class="section">
-    <h2>Key Metrics</h2>
+  <!-- KPI CARDS -->
+  <section>
+    <div class="section-title">Key Performance Indicators</div>
     <div class="kpi-grid">
       <div class="kpi-card">
-        <div class="kpi-label">Website Revenue YTD</div>
-        <div class="kpi-value">$507k</div>
-        <div class="kpi-sub">Jan – May 2026 (5 months)</div>
+        <div class="kpi-label">Website YTD Revenue</div>
+        <div class="kpi-value">$507K</div>
+        <div class="kpi-sub">Jan–May 2026</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Retail Revenue YTD</div>
-        <div class="kpi-value">$21.5k</div>
-        <div class="kpi-sub">Jan – May 2026 (5 months)</div>
+        <div class="kpi-label">Retail YTD Revenue</div>
+        <div class="kpi-value">$21.5K</div>
+        <div class="kpi-sub">Jan–May 2026</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Total Revenue YTD</div>
-        <div class="kpi-value">$529k</div>
-        <div class="kpi-sub">Combined website + retail</div>
+        <div class="kpi-label">Total YTD Revenue</div>
+        <div class="kpi-value">$529K</div>
+        <div class="kpi-sub">Jan–May 2026</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Bulk Powder on Hand</div>
-        <div class="kpi-value kpi-ok">35.1 kg</div>
-        <div class="kpi-sub">At Nau Mai — week of 13 Jul</div>
+        <div class="kpi-label">May Website Revenue</div>
+        <div class="kpi-value">$109K</div>
+        <div class="kpi-sub">$3,540/day avg</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Finished Stock Alerts</div>
-        <div class="kpi-value kpi-warn">6</div>
-        <div class="kpi-sub kpi-warn">2 Out of Stock · 2 Order Now · 2 Order Soon</div>
+        <div class="kpi-label">Bulk Powder Stock</div>
+        <div class="kpi-value">35.1<span style="font-size:14px;font-weight:400"> kg</span></div>
+        <div class="kpi-sub">Week of 13 Jul</div>
+        <span class="kpi-badge badge-ok">OK</span>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Packaging Alerts</div>
-        <div class="kpi-value kpi-alert">3</div>
-        <div class="kpi-sub kpi-alert">2 Out of Stock · 1 Order Now · 1 Order Soon</div>
+        <div class="kpi-label">12-Week Powder</div>
+        <div class="kpi-value">All OK</div>
+        <div class="kpi-sub">No stockouts forecast</div>
+        <span class="kpi-badge badge-ok">Healthy</span>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Website 12-Month Forecast</div>
-        <div class="kpi-value">$2.68M</div>
-        <div class="kpi-sub">Jul 2026 – Jun 2027</div>
+        <div class="kpi-label">Jun 2026 Forecast</div>
+        <div class="kpi-value">$191K</div>
+        <div class="kpi-sub">Website (Mid-Year Sale)</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">Total 12-Month Forecast</div>
-        <div class="kpi-value">$2.76M</div>
-        <div class="kpi-sub">Website + retail combined</div>
+        <div class="kpi-label">Revenue per kg</div>
+        <div class="kpi-value">$1,270</div>
+        <div class="kpi-sub">Website avg $/kg</div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Bulk Powder 12-Week Outlook -->
-  <div class="section">
-    <h2>Bulk Powder — 12-Week Outlook</h2>
-    <div class="card">
-      <table>
+  <!-- BULK POWDER 12-WEEK OUTLOOK -->
+  <section>
+    <div class="section-title">Bulk Powder — 12-Week Outlook</div>
+    <div style="background:var(--card);border-radius:12px;overflow:hidden;border:1px solid rgba(181,207,188,0.1);">
+      <table class="stockout-table">
         <thead>
           <tr>
             <th>Week Starting</th>
             <th>Batch</th>
             <th>Est. Yield (kg)</th>
-            <th>Finishing Stock (kg)</th>
+            <th>Stock at Nau Mai (kg)</th>
             <th>Powder Required (kg)</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>13 Jul 2026</td><td>25/5</td><td>17.65</td><td>35.10</td><td>25.00</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>20 Jul 2026</td><td>1/6</td><td>26.22</td><td>32.17</td><td>29.15</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>27 Jul 2026</td><td>8/6</td><td>51.03</td><td>33.20</td><td>50.00</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>03 Aug 2026</td><td>15/6</td><td>51.03</td><td>51.95</td><td>32.27</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>10 Aug 2026</td><td>22/6</td><td>54.43</td><td>74.11</td><td>32.27</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>17 Aug 2026</td><td>29/6</td><td>54.43</td><td>96.27</td><td>32.27</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>24 Aug 2026</td><td>6/7</td><td>54.43</td><td>118.43</td><td>32.27</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>31 Aug 2026</td><td>13/7</td><td>54.43</td><td>140.59</td><td>32.27</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>07 Sep 2026</td><td>20/7</td><td>54.43</td><td>160.00</td><td>35.02</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>14 Sep 2026</td><td>27/7</td><td>54.43</td><td>179.41</td><td>35.02</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>21 Sep 2026</td><td>3/8</td><td>54.43</td><td>198.83</td><td>35.02</td><td><span class="pill pill-ok">OK</span></td></tr>
-          <tr><td>28 Sep 2026</td><td>10/8</td><td>54.43</td><td>218.24</td><td>35.02</td><td><span class="pill pill-ok">OK</span></td></tr>
+          <tr><td>13 Jul 2026</td><td>25/5</td><td>17.65</td><td>35.10</td><td>25.00</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>20 Jul 2026</td><td>1/6</td><td>26.22</td><td>32.17</td><td>29.15</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>27 Jul 2026</td><td>8/6</td><td>51.03</td><td>33.20</td><td>50.00</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>03 Aug 2026</td><td>15/6</td><td>51.03</td><td>51.95</td><td>32.27</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>10 Aug 2026</td><td>22/6</td><td>54.43</td><td>74.11</td><td>32.27</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>17 Aug 2026</td><td>29/6</td><td>54.43</td><td>96.27</td><td>32.27</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>24 Aug 2026</td><td>6/7</td><td>54.43</td><td>118.43</td><td>32.27</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>31 Aug 2026</td><td>13/7</td><td>54.43</td><td>140.59</td><td>32.27</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>07 Sep 2026</td><td>20/7</td><td>54.43</td><td>160.00</td><td>35.02</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>14 Sep 2026</td><td>27/7</td><td>54.43</td><td>179.41</td><td>35.02</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>21 Sep 2026</td><td>3/8</td><td>54.43</td><td>198.83</td><td>35.02</td><td><span class="status-pill pill-ok">OK</span></td></tr>
+          <tr><td>28 Sep 2026</td><td>10/8</td><td>54.43</td><td>218.24</td><td>35.02</td><td><span class="status-pill pill-ok">OK</span></td></tr>
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 
-  <!-- Packaging & Finished Stock Alerts -->
-  <div class="two-col">
-    <div class="section" style="margin-bottom:0">
-      <h2>Packaging Alerts</h2>
-      <div class="card">
-        <table>
-          <thead>
-            <tr><th>SKU</th><th>Stock</th><th>Weeks Left</th><th>Status</th><th>Suggested Order</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>14g Powder (POW-14)</td><td>821</td><td>117.7</td><td><span class="pill pill-ok">OK</span></td><td>139</td></tr>
-            <tr><td>60g Powder (POW-60)</td><td>8,300</td><td>63.3</td><td><span class="pill pill-ok">OK</span></td><td>2,622</td></tr>
-            <tr><td>120g Powder (POW-120)</td><td>0</td><td>0</td><td><span class="pill pill-oos">OUT OF STOCK</span></td><td>290</td></tr>
-            <tr><td>28 Capsules (CAP-28)</td><td>1,850</td><td>102.2</td><td><span class="pill pill-ok">OK</span></td><td>362</td></tr>
-            <tr><td>60 Capsules (CAP-60)</td><td>5,850</td><td>36.9</td><td><span class="pill pill-ok">OK</span></td><td>3,170</td></tr>
-            <tr><td>120 Capsules (CAP-120)</td><td>0</td><td>0</td><td><span class="pill pill-oos">OUT OF STOCK</span></td><td>39</td></tr>
-            <tr><td>Mynd Chocolate (CHOC-224)</td><td>2,000</td><td>12.5</td><td><span class="pill pill-now">ORDER NOW</span></td><td>3,203</td></tr>
-            <tr><td>Mynd Brew (BREW-250)</td><td>2,075</td><td>33.9</td><td><span class="pill pill-ok">OK</span></td><td>1,226</td></tr>
-            <tr><td>¼ Teaspoon (SPOON-1/4)</td><td>220</td><td>17.3</td><td><span class="pill pill-soon">ORDER SOON</span></td><td>254</td></tr>
-          </tbody>
-        </table>
+  <!-- PACKAGING & FINISHED STOCK ALERTS -->
+  <section>
+    <div class="section-title">Packaging & Finished Stock Alerts</div>
+    <div class="alerts-grid">
+
+      <div class="alerts-panel">
+        <div class="alerts-panel-header">📦 Packaging Inventory</div>
+        <div class="alert-row">
+          <span class="alert-name">14g Powder (POW-14)</span>
+          <span class="alert-qty">821 units · 117.7 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">60g Powder (POW-60)</span>
+          <span class="alert-qty">8,300 units · 63.3 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">120g Powder (POW-120)</span>
+          <span class="alert-qty">0 units · 0 wks</span>
+          <span class="status-pill pill-out">Out of Stock</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 290 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">28 Capsules (CAP-28)</span>
+          <span class="alert-qty">1,850 units · 102.2 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">60 Capsules (CAP-60)</span>
+          <span class="alert-qty">5,850 units · 36.9 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">120 Capsules (CAP-120)</span>
+          <span class="alert-qty">0 units · 0 wks</span>
+          <span class="status-pill pill-out">Out of Stock</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 39 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">Mynd Chocolate (CHOC-224)</span>
+          <span class="alert-qty">2,000 units · 12.5 wks</span>
+          <span class="status-pill pill-order-now">Order Now</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 3,203 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">Mynd Brew (BREW-250)</span>
+          <span class="alert-qty">2,075 units · 33.9 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">¼ Teaspoon (SPOON-1/4)</span>
+          <span class="alert-qty">220 units · 17.3 wks</span>
+          <span class="status-pill pill-order-soon">Order Soon</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 254 units</span>
+        </div>
+      </div>
+
+      <div class="alerts-panel">
+        <div class="alerts-panel-header">🏪 Finished Stock Inventory</div>
+        <div class="alert-row">
+          <span class="alert-name">14g Powder (POW-14)</span>
+          <span class="alert-qty">94 units · 13.5 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">60g Powder (POW-60)</span>
+          <span class="alert-qty">466 units · 3.6 wks</span>
+          <span class="status-pill pill-order-now">Order Now</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 1,311 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">120g Powder (POW-120)</span>
+          <span class="alert-qty">0 units · 0 wks</span>
+          <span class="status-pill pill-out">Out of Stock</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 145 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">28 Capsules (CAP-28)</span>
+          <span class="alert-qty">392 units · 21.7 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">60 Capsules (CAP-60)</span>
+          <span class="alert-qty">521 units · 3.3 wks</span>
+          <span class="status-pill pill-order-now">Order Now</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 1,585 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">120 Capsules (CAP-120)</span>
+          <span class="alert-qty">0 units · 0 wks</span>
+          <span class="status-pill pill-out">Out of Stock</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 19 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">Mynd Chocolate (CHOC-224)</span>
+          <span class="alert-qty">672 units · 4.2 wks</span>
+          <span class="status-pill pill-order-soon">Order Soon</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 1,601 units</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">Mynd Brew (BREW-250)</span>
+          <span class="alert-qty">431 units · 7.0 wks</span>
+          <span class="status-pill pill-ok">OK</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">¼ Teaspoon (SPOON-1/4)</span>
+          <span class="alert-qty">220 units · 17.3 wks</span>
+          <span class="status-pill pill-order-soon">Order Soon</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name" style="padding-left:16px;color:var(--muted);font-size:11px;">→ Order 254 units</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRODUCT SPLIT -->
+  <section>
+    <div class="section-title">Product Mix — May 2026 (Latest Completed Month)</div>
+    <div style="background:var(--card);border-radius:12px;padding:24px;border:1px solid rgba(181,207,188,0.1);">
+      <div class="split-layout">
+        <div>
+          <table class="split-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Units</th>
+                <th>Share</th>
+                <th style="width:100px"></th>
+              </tr>
+            </thead>
+            <tbody id="splitTableBody"></tbody>
+          </table>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="width:260px;height:260px;position:relative;">
+            <canvas id="splitChart"></canvas>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="section" style="margin-bottom:0">
-      <h2>Finished Stock Alerts</h2>
-      <div class="card">
-        <table>
-          <thead>
-            <tr><th>SKU</th><th>Stock</th><th>Weeks Left</th><th>Status</th><th>Suggested Order</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>14g Powder (POW-14)</td><td>94</td><td>13.5</td><td><span class="pill pill-ok">OK</span></td><td>70</td></tr>
-            <tr><td>60g Powder (POW-60)</td><td>466</td><td>3.6</td><td><span class="pill pill-now">ORDER NOW</span></td><td>1,311</td></tr>
-            <tr><td>120g Powder (POW-120)</td><td>0</td><td>0</td><td><span class="pill pill-oos">OUT OF STOCK</span></td><td>145</td></tr>
-            <tr><td>28 Capsules (CAP-28)</td><td>392</td><td>21.7</td><td><span class="pill pill-ok">OK</span></td><td>181</td></tr>
-            <tr><td>60 Capsules (CAP-60)</td><td>521</td><td>3.3</td><td><span class="pill pill-now">ORDER NOW</span></td><td>1,585</td></tr>
-            <tr><td>120 Capsules (CAP-120)</td><td>0</td><td>0</td><td><span class="pill pill-oos">OUT OF STOCK</span></td><td>19</td></tr>
-            <tr><td>Mynd Chocolate (CHOC-224)</td><td>672</td><td>4.2</td><td><span class="pill pill-soon">ORDER SOON</span></td><td>1,601</td></tr>
-            <tr><td>Mynd Brew (BREW-250)</td><td>431</td><td>7.0</td><td><span class="pill pill-ok">OK</span></td><td>613</td></tr>
-            <tr><td>¼ Teaspoon (SPOON-1/4)</td><td>220</td><td>17.3</td><td><span class="pill pill-soon">ORDER SOON</span></td><td>254</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  </section>
 
-  <!-- Product Split -->
-  <div class="section">
-    <h2>Product Split — June 2026 (Latest Completed Month)</h2>
-    <div class="split-grid">
-      <div class="card">
-        <table>
-          <thead>
-            <tr><th>Product</th><th>Units Sold</th><th>Share %</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>60g Powder (POW-60)</td><td>1,115</td><td>23.7%</td></tr>
-            <tr><td>60 Capsules (CAP-60)</td><td>1,612</td><td>34.2%</td></tr>
-            <tr><td>Mynd Chocolate (CHOC-224)</td><td>1,042</td><td>22.1%</td></tr>
-            <tr><td>Mynd Brew (BREW-250)</td><td>359</td><td>7.6%</td></tr>
-            <tr><td>28 Capsules (CAP-28)</td><td>368</td><td>7.8%</td></tr>
-            <tr><td>¼ Teaspoon (SPOON-1/4)</td><td>183</td><td>3.9%</td></tr>
-            <tr><td>14g Powder (POW-14)</td><td>16</td><td>0.3%</td></tr>
-            <tr><td>120g Powder (POW-120)</td><td>2</td><td>0.04%</td></tr>
-            <tr><td>120 Capsules (CAP-120)</td><td>16</td><td>0.3%</td></tr>
-            <tr><td style="font-weight:600">Total</td><td style="font-weight:600">4,713</td><td style="font-weight:600">100%</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="chart-card split-donut">
-        <canvas id="donutChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- Revenue & Powder Charts -->
-  <div class="chart-grid">
+  <!-- CHARTS -->
+  <section>
+    <div class="section-title">24-Month Revenue Forecast</div>
     <div class="chart-card">
-      <h2>Revenue Forecast — 24 Months</h2>
-      <div class="chart-wrap">
+      <div class="chart-title">Website + Retail Monthly Revenue Forecast (Jul 2026 – Dec 2027)</div>
+      <div class="chart-wrap-tall">
         <canvas id="revenueChart"></canvas>
       </div>
     </div>
+  </section>
+
+  <section>
+    <div class="section-title">Powder Demand Forecast</div>
     <div class="chart-card">
-      <h2>Powder Demand — 24 Months (kg)</h2>
+      <div class="chart-title">Monthly Powder Required — Website + Retail (Jul 2026 – Dec 2027)</div>
       <div class="chart-wrap">
         <canvas id="powderChart"></canvas>
       </div>
     </div>
-  </div>
+  </section>
 
 </main>
 
 <footer>
-  <p>Mynd Mushrooms Stock Management Portal · Auto-generated 13 Jul 2026 · <a href="https://sean-mynd.github.io/mynd-stock-portal/">mynd-stock-portal</a></p>
+  Mynd Mushrooms Stock Management Portal &nbsp;·&nbsp; Auto-generated 18 July 2026 &nbsp;·&nbsp; Data from Google Sheets
 </footer>
 
 <script>
-const HEADING = '#B5CFBC';
-const MUTED = '#6a8a7a';
-const BODY = '#EFEFE8';
-const GREEN = '#4caf87';
-const AMBER = '#e8a838';
-const CARD = '#375555';
+// ============================================================
+// DATA
+// ============================================================
 
-Chart.defaults.color = MUTED;
+// Product split — May 2026 packaging usage
+const splitData = [
+  { name: '60 Capsules (CAP-60)', units: 945 },
+  { name: 'Mynd Chocolate (CHOC-224)', units: 613 },
+  { name: '60g Powder (POW-60)', units: 654 },
+  { name: '28 Capsules (CAP-28)', units: 217 },
+  { name: 'Mynd Brew (BREW-250)', units: 216 },
+  { name: '¼ Teaspoon (SPOON-1/4)', units: 105 },
+  { name: '14g Powder (POW-14)', units: 15 },
+  { name: '120 Capsules (CAP-120)', units: 9 },
+  { name: '120g Powder (POW-120)', units: 1 },
+];
+const splitTotal = splitData.reduce((s,d) => s+d.units, 0);
+
+// Revenue forecast labels (Jul 2026 – Dec 2027)
+const revLabels = [
+  'Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26',
+  'Jan 27','Feb 27','Mar 27','Apr 27','May 27','Jun 27',
+  'Jul 27','Aug 27','Sep 27','Oct 27','Nov 27','Dec 27'
+];
+const webRev = [156436,173644,182326,191442,250000,215000,221618,232699,244334,256551,269378,282847,296990,311839,327431,343803,360993,379043];
+const retRev = [5251,5513,5789,6078,6382,6701,7036,7388,7757,8145,8553,8980,9429,9901,10396,10915,11461,12034];
+
+// Powder demand (website + retail)
+const webPowder = [123.3,136.8,143.6,150.8,197.0,169.5,174.7,183.4,192.6,202.2,212.2,222.8,233.9,245.6,257.9,270.7,284.2,298.4];
+const retPowder = [5.8,6.1,6.4,6.8,7.1,7.4,7.7,8.1,8.6,9.0,9.5,9.9,10.3,10.8,11.4,12.0,12.6,13.3];
+
+// ============================================================
+// CHART DEFAULTS
+// ============================================================
+Chart.defaults.color = '#6a8a7a';
 Chart.defaults.font.family = "'Space Grotesk', sans-serif";
+Chart.defaults.font.size = 11;
 
-// Donut chart - product split Jun 2026
-new Chart(document.getElementById('donutChart'), {
+const COLORS = [
+  '#B5CFBC','#7FADA8','#4CAF7D','#E8A838','#8B5CF6','#60A5FA','#F472B6','#34D399','#FB923C'
+];
+
+// ============================================================
+// PRODUCT SPLIT TABLE + DOUGHNUT
+// ============================================================
+const tbody = document.getElementById('splitTableBody');
+splitData.forEach((d,i) => {
+  const pct = (d.units/splitTotal*100).toFixed(1);
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="color:var(--body)">${d.name}</td>
+    <td style="color:var(--muted)">${d.units.toLocaleString()}</td>
+    <td style="color:var(--heading);font-weight:600">${pct}%</td>
+    <td><div class="pct-bar-wrap"><div class="pct-bar" style="width:${pct}%;background:${COLORS[i]}"></div></div></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+new Chart(document.getElementById('splitChart'), {
   type: 'doughnut',
   data: {
-    labels: ['60 Caps', '60g Powder', 'Chocolate', 'Brew', '28 Caps', '¼ Tsp', 'Others'],
+    labels: splitData.map(d=>d.name),
     datasets: [{
-      data: [1612, 1115, 1042, 359, 368, 183, 34],
-      backgroundColor: ['#4caf87','#B5CFBC','#e8a838','#7ab8c0','#9eb5a0','#c4a04a','#6a8a7a'],
-      borderWidth: 0,
-      hoverOffset: 6
+      data: splitData.map(d=>d.units),
+      backgroundColor: COLORS,
+      borderColor: '#375555',
+      borderWidth: 2,
     }]
   },
   options: {
-    responsive: true,
-    maintainAspectRatio: true,
+    cutout: '65%',
     plugins: {
-      legend: { position: 'bottom', labels: { color: MUTED, boxWidth: 12, font: { size: 11 } } }
-    },
-    cutout: '65%'
-  }
-});
-
-// Revenue chart
-const months = ['Jun\'26','Jul\'26','Aug\'26','Sep\'26','Oct\'26','Nov\'26','Dec\'26','Jan\'27','Feb\'27','Mar\'27','Apr\'27','May\'27','Jun\'27','Jul\'27','Aug\'27','Sep\'27','Oct\'27','Nov\'27','Dec\'27'];
-const webRev = [191000,156436,173644,182326,191442,250000,215000,221618,232699,244334,256551,269378,282847,296990,311839,327431,343803,360993,379043];
-const retailRev = [5000,5251,5513,5789,6078,6382,6701,7036,7388,7757,8145,8553,8980,9429,9901,10396,10915,11461,12034];
-
-new Chart(document.getElementById('revenueChart'), {
-  type: 'bar',
-  data: {
-    labels: months,
-    datasets: [
-      { label: 'Website', data: webRev, backgroundColor: 'rgba(76,175,135,0.75)', stack: 'a' },
-      { label: 'Retail', data: retailRev, backgroundColor: 'rgba(181,207,188,0.5)', stack: 'a' }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: MUTED, boxWidth: 12 } },
+      legend: { display: false },
       tooltip: {
         callbacks: {
-          label: ctx => ` ${ctx.dataset.label}: $${(ctx.raw/1000).toFixed(0)}k`
+          label: ctx => ` ${ctx.label}: ${ctx.parsed.toLocaleString()} units (${(ctx.parsed/splitTotal*100).toFixed(1)}%)`
         }
       }
-    },
-    scales: {
-      x: { stacked: true, ticks: { color: MUTED, font: { size: 10 } }, grid: { color: 'rgba(106,138,122,0.15)' } },
-      y: { stacked: true, ticks: { color: MUTED, callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: 'rgba(106,138,122,0.15)' } }
     }
   }
 });
 
-// Powder demand chart
-const webPowder = [150.486,123.284,136.782,143.634,150.81,196.964,169.468,174.684,183.424,192.576,202.17,212.22,222.814,233.94,245.626,257.886,270.72,284.218,298.408];
-const retailPowder = [6,5.83,6.138,6.446,6.754,7.062,7.384,7.734,8.144,8.584,9.024,9.464,9.904,10.344,10.842,11.428,12.028,12.628,13.258];
-const totalPowder = webPowder.map((v,i) => +(v + retailPowder[i]).toFixed(2));
-
-new Chart(document.getElementById('powderChart'), {
-  type: 'line',
+// ============================================================
+// REVENUE STACKED BAR
+// ============================================================
+new Chart(document.getElementById('revenueChart'), {
+  type: 'bar',
   data: {
-    labels: months,
+    labels: revLabels,
     datasets: [
-      { label: 'Total Demand (kg)', data: totalPowder, borderColor: GREEN, backgroundColor: 'rgba(76,175,135,0.12)', fill: true, tension: 0.35, pointRadius: 3 },
-      { label: 'Website (kg)', data: webPowder, borderColor: AMBER, backgroundColor: 'transparent', borderDash: [4,3], tension: 0.35, pointRadius: 2 }
+      {
+        label: 'Website',
+        data: webRev,
+        backgroundColor: 'rgba(181,207,188,0.7)',
+        borderRadius: 3,
+      },
+      {
+        label: 'Retail',
+        data: retRev,
+        backgroundColor: 'rgba(127,173,168,0.7)',
+        borderRadius: 3,
+      }
     ]
   },
   options: {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: MUTED, boxWidth: 12 } }
-    },
     scales: {
-      x: { ticks: { color: MUTED, font: { size: 10 } }, grid: { color: 'rgba(106,138,122,0.15)' } },
-      y: { ticks: { color: MUTED, callback: v => v + ' kg' }, grid: { color: 'rgba(106,138,122,0.15)' } }
+      x: {
+        stacked: true,
+        grid: { color: 'rgba(181,207,188,0.06)' },
+        ticks: { color: '#6a8a7a' }
+      },
+      y: {
+        stacked: true,
+        grid: { color: 'rgba(181,207,188,0.06)' },
+        ticks: {
+          color: '#6a8a7a',
+          callback: v => '$' + (v/1000).toFixed(0) + 'K'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: { color: '#B5CFBC', boxWidth: 12 }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}`
+        }
+      }
+    }
+  }
+});
+
+// ============================================================
+// POWDER DEMAND LINE
+// ============================================================
+new Chart(document.getElementById('powderChart'), {
+  type: 'line',
+  data: {
+    labels: revLabels,
+    datasets: [
+      {
+        label: 'Website (kg)',
+        data: webPowder,
+        borderColor: '#B5CFBC',
+        backgroundColor: 'rgba(181,207,188,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+      },
+      {
+        label: 'Retail (kg)',
+        data: retPowder,
+        borderColor: '#7FADA8',
+        backgroundColor: 'rgba(127,173,168,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { grid: { color: 'rgba(181,207,188,0.06)' }, ticks: { color: '#6a8a7a' } },
+      y: {
+        grid: { color: 'rgba(181,207,188,0.06)' },
+        ticks: { color: '#6a8a7a', callback: v => v + ' kg' }
+      }
+    },
+    plugins: {
+      legend: { labels: { color: '#B5CFBC', boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} kg`
+        }
+      }
     }
   }
 });
